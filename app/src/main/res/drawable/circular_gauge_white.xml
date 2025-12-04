@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- BACKGROUND ABU2 -->
+    <item android:id="@android:id/background">
+        <shape android:shape="oval">
+            <size android:width="200dp" android:height="200dp"/>
+            <stroke android:width="14dp" android:color="#DDDDDD"/>
+        </shape>
+    </item>
+
+    <!-- PROGRESS HIJAU -->
+    <item android:id="@android:id/progress">
+        <shape android:shape="oval">
+            <size android:width="200dp" android:height="200dp"/>
+            <stroke android:width="14dp" android:color="@color/green_primary"/>
+        </shape>
+    </item>
+
+</layer-list>

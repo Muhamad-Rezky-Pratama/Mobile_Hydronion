@@ -1,0 +1,20 @@
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="light_background_overlay">#80F5F5F5</color>
+    <color name="green_primary">#00FF66</color>
+    <color name="dark_green_text">#1A4027</color>
+    <color name="gray_text">#777777</color>
+    <color name="card_background">#FFFFFF</color>
+
+    <color name="color_status_optimal">#00FF66</color>
+    <color name="color_status_warning">#FFC107</color>
+    <color name="color_status_critical">#FF3333</color>
+
+    <color name="light_background">#F5F5F5</color>
+    <color name="dark_text">#333333</color>
+    <color name="gray_secondary">#777777</color>
+
+
+</resources>

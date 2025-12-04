@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/transparent"
+    tools:context=".MonitoringFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sistem Monitoring"
+            android:textColor="@color/dark_green_text"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/card_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center">
+
+                    <ProgressBar
+                        android:id="@+id/gaugeProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:max="100"
+                        android:padding="8dp"
+                        android:progress="75"
+                        android:progressDrawable="@drawable/circular_gauge_style"
+                        android:rotation="270" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/gaugePercentageText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="75%"
+                            android:textColor="@color/dark_green_text"
+                            android:textStyle="bold"
+                            android:textSize="40sp" />
+
+                        <TextView
+                            android:id="@+id/gaugeStatusText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-4dp"
+                            android:text="OPTIMAL"
+                            android:textColor="@color/dark_green_text"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Rata - Rata Nilai TDS &amp; Tinggi Air:"
+                        android:textColor="@color/dark_text" android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/avgTdsEcValue"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="850 ppm / 15.5 cm" android:textColor="@color/green_primary"
+                        android:textSize="16sp" android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Rata - Rata Nilai Hum &amp; Temp:"
+                        android:textColor="@color/dark_text" android:textSize="14sp" android:layout_marginTop="6dp" />
+                    <TextView
+                        android:id="@+id/avgHumTempValue"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="75% / 23.5°C" android:textColor="@color/green_primary"
+                        android:textSize="16sp" android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Rata - Rata Nilai PH:"
+                        android:textColor="@color/dark_text" android:textSize="14sp" android:layout_marginTop="6dp" />
+                    <TextView
+                        android:id="@+id/avgPhValue"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="6.1" android:textColor="@color/green_primary"
+                        android:textSize="16sp" android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/statusDetailLabel"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Kondisi Hidroponik:"
+                        android:textColor="@color/dark_text" android:textStyle="bold"
+                        android:textSize="14sp" android:layout_marginTop="14dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Detail Sensor" android:textColor="@color/dark_green_text"
+            android:textSize="18sp" android:textStyle="bold" android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:weightSum="2" android:layout_marginBottom="10dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="140dp" android:layout_weight="1"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp" app:cardBackgroundColor="@color/card_background" android:layout_marginEnd="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="horizontal" android:padding="14dp">
+                        <ImageView android:id="@+id/icon_tds" android:layout_width="45dp" android:layout_height="45dp"
+                            android:src="@drawable/ic_tds" android:tint="@color/dark_green_text"
+                            android:contentDescription="TDS Icon" android:layout_gravity="center_vertical" android:layout_marginEnd="10dp"/>
+                        <LinearLayout
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                            android:orientation="vertical" android:gravity="end">
+                            <TextView android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"
+                                android:text="TDS (PPM)" android:textColor="@color/dark_green_text"
+                                android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
+
+                            <TextView
+                                android:id="@+id/tds_value"
+                                android:layout_width="71dp"
+                                android:layout_height="15dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="850 ppm"
+                                android:textColor="@color/green_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="140dp" android:layout_weight="1"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp" app:cardBackgroundColor="@color/card_background" android:layout_marginStart="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="horizontal" android:padding="14dp">
+                        <ImageView android:id="@+id/icon_water_level" android:layout_width="45dp" android:layout_height="45dp"
+                            android:src="@drawable/ic_water_level" android:tint="@color/dark_green_text"
+                            android:contentDescription="Tinggi Air Icon" android:layout_gravity="center_vertical" android:layout_marginEnd="10dp"/>
+                        <LinearLayout
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                            android:orientation="vertical" android:gravity="end">
+                            <TextView android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"
+                                android:text="Tinggi Air (cm)" android:textColor="@color/dark_green_text"
+                                android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
+
+                            <TextView
+                                android:id="@+id/water_level_value"
+                                android:layout_width="75dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="15.5 cm"
+                                android:textColor="@color/green_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:weightSum="2" android:layout_marginBottom="10dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="140dp" android:layout_weight="1"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp" app:cardBackgroundColor="@color/card_background" android:layout_marginEnd="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="horizontal" android:padding="14dp">
+                        <ImageView android:id="@+id/icon_ph" android:layout_width="45dp" android:layout_height="45dp"
+                            android:src="@drawable/ic_ph" android:tint="@color/dark_green_text"
+                            android:contentDescription="pH Icon" android:layout_gravity="center_vertical" android:layout_marginEnd="10dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="112dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="pH Level"
+                                android:textColor="@color/dark_green_text"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ph_value"
+                                android:layout_width="56dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="6.1"
+                                android:textColor="@color/green_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="140dp" android:layout_weight="1"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp" app:cardBackgroundColor="@color/card_background" android:layout_marginStart="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="horizontal" android:padding="14dp">
+                        <ImageView android:id="@+id/icon_air_temp" android:layout_width="45dp" android:layout_height="45dp"
+                            android:src="@drawable/ic_humidity" android:tint="@color/dark_green_text"
+                            android:contentDescription="Suhu Udara Icon" android:layout_gravity="center_vertical" android:layout_marginEnd="10dp"/>
+                        <LinearLayout
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                            android:orientation="vertical" android:gravity="end">
+                            <TextView android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"
+                                android:text="Suhu Udara" android:textColor="@color/dark_green_text"
+                                android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
+
+                            <TextView
+                                android:id="@+id/air_temp_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="23.5°C"
+                                android:textColor="@color/green_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="60dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="140dp" android:layout_weight="1"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp" app:cardBackgroundColor="@color/card_background" android:layout_marginEnd="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="horizontal" android:padding="14dp">
+                        <ImageView android:id="@+id/icon_humidity" android:layout_width="45dp" android:layout_height="45dp"
+                            android:src="@drawable/ic_humidity" android:tint="@color/dark_green_text"
+                            android:contentDescription="Kelembaban Icon" android:layout_gravity="center_vertical" android:layout_marginEnd="10dp"/>
+                        <LinearLayout
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+                            android:orientation="vertical" android:gravity="end">
+                            <TextView android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"
+                                android:text="Kelembaban" android:textColor="@color/dark_green_text"
+                                android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
+
+                            <TextView
+                                android:id="@+id/hum_value"
+                                android:layout_width="59dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="75%"
+                                android:textColor="@color/green_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

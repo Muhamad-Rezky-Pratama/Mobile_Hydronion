@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape
+            android:shape="ring"
+            android:thicknessRatio="15"
+            android:useLevel="false">
+            <solid android:color="#A0FFFFFF" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <shape
+            android:shape="ring"
+            android:thicknessRatio="15"
+            android:useLevel="true">
+            <solid android:color="@color/dark_green_text" />
+            <gradient
+                android:angle="0"
+                android:startColor="@color/green_primary"
+                android:endColor="@color/green_primary"
+                android:type="sweep" />
+        </shape>
+    </item>
+</layer-list>
