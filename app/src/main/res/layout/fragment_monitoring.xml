@@ -163,12 +163,12 @@
                                 android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
 
                             <TextView
-                                android:id="@+id/tds_value"
+                                android:id="@+id/tvtds"
                                 android:layout_width="71dp"
                                 android:layout_height="15dp"
                                 android:layout_weight="1"
                                 android:gravity="top"
-                                android:text="850 ppm"
+                                android:text=" - ppm"
                                 android:textColor="@color/green_primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -193,12 +193,12 @@
                                 android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
 
                             <TextView
-                                android:id="@+id/water_level_value"
+                                android:id="@+id/tvwaterlevel"
                                 android:layout_width="75dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="top"
-                                android:text="15.5 cm"
+                                android:text=" - cm"
                                 android:textColor="@color/green_primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -240,12 +240,12 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/ph_value"
+                                android:id="@+id/tvph"
                                 android:layout_width="56dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="top"
-                                android:text="6.1"
+                                android:text=" - "
                                 android:textColor="@color/green_primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -270,12 +270,12 @@
                                 android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
 
                             <TextView
-                                android:id="@+id/air_temp_value"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tvtemp"
+                                android:layout_width="65dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="top"
-                                android:text="23.5°C"
+                                android:text=" - °C"
                                 android:textColor="@color/green_primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -309,12 +309,12 @@
                                 android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
 
                             <TextView
-                                android:id="@+id/hum_value"
+                                android:id="@+id/tvhum"
                                 android:layout_width="59dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="top"
-                                android:text="75%"
+                                android:text=" - %"
                                 android:textColor="@color/green_primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
