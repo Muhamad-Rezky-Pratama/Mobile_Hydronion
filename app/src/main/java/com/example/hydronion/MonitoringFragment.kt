@@ -15,12 +15,19 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
+
 class MonitoringFragment : Fragment() {
 
     private var _binding: FragmentMonitoringBinding? = null
     private val binding get() = _binding!!
 
     private var isLiveMode = true
+
+    private val WEATHER_API_KEY = "6413722b7606fafed462799567af2a9a"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,11 +42,41 @@ class MonitoringFragment : Fragment() {
 
         updateSensorData()
 
+        fetchPublicWeatherData("Bandung")
+
         binding.gaugeStatusText.setOnClickListener {
             Toast.makeText(requireContext(), "Menampilkan Detail Status...", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun fetchPublicWeatherData(city: String) {
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$WEATHER_API_KEY&units=metric"
 
+        val queue = Volley.newRequestQueue(requireContext())
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    val jsonResponse = JSONObject(response)
+                    val main = jsonResponse.getJSONObject("main")
+                    val weatherArray = jsonResponse.getJSONArray("weather")
+                    val description = weatherArray.getJSONObject(0).getString("description")
+                    val temp = main.getDouble("temp")
+                    val cityName = jsonResponse.getString("name")
+
+                    // Update UI Card Cuaca yang baru di XML [cite: 31, 32]
+                    binding.tvLocation.text = "Lokasi: $cityName"
+                    binding.tvWeatherDesc.text = "Cuaca Luar: ${description.uppercase()}"
+                    binding.tvExternalTemp.text = "${temp.toInt()}°C"
+                } catch (e: Exception) {
+                    Log.e("WEATHER_ERROR", e.message ?: "Parsing error")
+                }
+            },
+            { error ->
+                binding.tvLocation.text = "Gagal memuat cuaca"
+            }
+        )
+        queue.add(stringRequest)
+    }
     private fun generateSimulatedSensorData(): SensorResponse {
         return SensorResponse(
             tds = (300..1200).random(),

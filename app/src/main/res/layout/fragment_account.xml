@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F8F9FA">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profil Akun"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green_text"
+        android:layout_marginBottom="20dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/card_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama User"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID Hidroponik"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvHidroponikId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HIDRO-001"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Role"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLIENT"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/green_primary" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Informasi Sistem"
+        android:layout_marginTop="24dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvApiUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alamat API Publik: https://openweathermap.org/api"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#1976D2" />
+
+</LinearLayout>

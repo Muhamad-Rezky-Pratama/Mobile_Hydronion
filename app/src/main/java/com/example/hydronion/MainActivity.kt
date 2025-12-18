@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private val controlFragment = ControlFragment()
     private val logFragment = LogFragment()
 
+    private val accountFragment = AccountFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,6 +43,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_log -> {
                     replaceFragment(logFragment)
+                    true
+                }
+                R.id.nav_account -> {
+                    replaceFragment(accountFragment)
                     true
                 }
                 else -> false
