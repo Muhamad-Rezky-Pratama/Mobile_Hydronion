@@ -13,28 +13,33 @@ import com.example.hydronion.ControlFragment
 import com.example.hydronion.LogFragment
 class MainActivity : AppCompatActivity() {
 
-    // KOREKSI SINTAKS: Deklarasi yang benar
     private lateinit var binding: ActivityMainBinding
+
+    // --- ROLE SIMULATION ---
+    // Ubah true untuk Admin (2 Menu), false untuk Client (4 Menu)
+    private val isAdmin = true
+
+    // Fragment Client
     private val monitoringFragment = MonitoringFragment()
+    private val accountFragment = AccountFragment()
     private val controlFragment = ControlFragment()
     private val logFragment = LogFragment()
 
-    private val accountFragment = AccountFragment()
+    // Fragment Admin
+    private val adminMonitoringFragment = AdminMonitoringFragment()
+    private val adminAccountFragment = AdminAccountFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (savedInstanceState == null) {
-            replaceFragment(monitoringFragment)
-        }
+        setupNavigationByRole()
 
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_monitoring -> {
-                    replaceFragment(monitoringFragment)
+                    replaceFragment(if (isAdmin) adminMonitoringFragment else monitoringFragment)
                     true
                 }
                 R.id.nav_control -> {
@@ -46,11 +51,29 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_account -> {
-                    replaceFragment(accountFragment)
+                    replaceFragment(if (isAdmin) adminAccountFragment else accountFragment)
                     true
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun setupNavigationByRole() {
+        if (isAdmin) {
+            // 1. Tampilkan Dashboard Admin pertama kali
+            replaceFragment(adminMonitoringFragment)
+
+            // 2. SEMBUNYIKAN MENU YANG TIDAK ADA DI ADMIN
+            binding.bottomNavigation.menu.findItem(R.id.nav_control).isVisible = false
+            binding.bottomNavigation.menu.findItem(R.id.nav_log).isVisible = false
+        } else {
+            // Tampilkan Dashboard Client pertama kali
+            replaceFragment(monitoringFragment)
+
+            // Pastikan semua menu terlihat untuk Client
+            binding.bottomNavigation.menu.findItem(R.id.nav_control).isVisible = true
+            binding.bottomNavigation.menu.findItem(R.id.nav_log).isVisible = true
         }
     }
 

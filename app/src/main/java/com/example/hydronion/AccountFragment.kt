@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.hydronion.databinding.FragmentAccountBinding
 
@@ -28,6 +29,11 @@ class AccountFragment : Fragment() {
         binding.tvUsername.text = "ASEP Hydronion"
         binding.tvHidroponikId.text = "ITN-HIDRO-2025-01"
         binding.tvRole.text = "CLIENT "
+
+        binding.btnLogoutClient.setOnClickListener {
+            Toast.makeText(requireContext(), "Berhasil Logout dari Client", Toast.LENGTH_SHORT).show()
+            // Di sini kamu bisa tambahkan kode pindah ke LoginActivity jika sudah ada
+        }
 
         // Menampilkan Alamat API sesuai syarat soal nomor 3
         binding.tvApiUrl.text = "Sumber Data Publik: \nhttps://api.openweathermap.org/data/2.5/weather"
