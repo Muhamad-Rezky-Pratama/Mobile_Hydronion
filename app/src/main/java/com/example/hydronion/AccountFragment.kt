@@ -27,7 +27,7 @@ class AccountFragment : Fragment() {
         // Nantinya data ini bisa diambil dari hasil Login/Database
         binding.tvUsername.text = "ASEP Hydronion"
         binding.tvHidroponikId.text = "ITN-HIDRO-2025-01"
-        binding.tvRole.text = "CLIENT "
+        binding.tvRole.text = "CLIENT"
 
         // Menampilkan Alamat API sesuai syarat soal nomor 3
         binding.tvApiUrl.text = "Sumber Data Publik: \nhttps://api.openweathermap.org/data/2.5/weather"

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_user"
+    app:startDestination="@id/monitoringFragment">
+
+    <fragment
+        android:id="@+id/monitoringFragment"
+        android:name="com.example.hydronion.MonitoringFragment" />
+
+    <fragment
+        android:id="@+id/controlFragment"
+        android:name="com.example.hydronion.ControlFragment" />
+
+    <fragment
+        android:id="@+id/logFragment"
+        android:name="com.example.hydronion.LogFragment" />
+
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.example.hydronion.AccountFragment" />
+
+</navigation>

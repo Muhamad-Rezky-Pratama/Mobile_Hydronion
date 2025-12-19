@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/adminAccountFragment"
+        android:icon="@drawable/ic_account"
+        android:title="Akun" />
+    <item
+        android:id="@+id/adminMonitoringFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Monitor" />
+
+</menu>

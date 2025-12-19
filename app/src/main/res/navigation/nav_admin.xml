@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_admin"
+    app:startDestination="@id/adminAccountFragment">
+
+    <fragment
+        android:id="@+id/adminAccountFragment"
+        android:name="com.example.hydronion.AdminAccountFragment" />
+
+    <fragment
+        android:id="@+id/adminMonitoringFragment"
+        android:name="com.example.hydronion.AdminMonitoringFragment" />
+
+</navigation>

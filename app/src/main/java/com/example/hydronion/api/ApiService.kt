@@ -10,4 +10,9 @@ interface ApiService {
 
     @POST("api/control")
     fun controlPump(@Body request: ControlRequest): Call<Void>
+
+    @POST("login")
+    fun login(
+        @Body request: LoginRequest
+    ): Call<LoginResponse>
 }
