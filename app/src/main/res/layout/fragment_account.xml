@@ -48,14 +48,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ID Hidroponik"
+                android:text="ID User"
                 android:textSize="12sp"
                 android:textColor="#757575" />
             <TextView
                 android:id="@+id/tvHidroponikId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="HIDRO-001"
+                android:text="Hydronion-001"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/dark_text"
@@ -74,7 +74,17 @@
                 android:text="CLIENT"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/green_primary" />
+                android:textColor="@color/green_primary"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:backgroundTint="#D32F2F"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

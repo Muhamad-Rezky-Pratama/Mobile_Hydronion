@@ -29,57 +29,36 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User"
-                android:textSize="12sp"
-                android:textColor="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="User" android:textSize="12sp" android:textColor="#757575" />
             <TextView
                 android:id="@+id/tvAdminUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Muhamad Rezky Pratama"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#212121"
-                android:layout_marginBottom="12dp"/>
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Memuat..." android:textSize="18sp" android:textStyle="bold"
+                android:textColor="#212121" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Role"
-                android:textSize="12sp"
-                android:textColor="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Role" android:textSize="12sp" android:textColor="#757575" />
             <TextView
                 android:id="@+id/tvAdminRole"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADMIN"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#D32F2F"
-                android:layout_marginBottom="12dp"/>
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="ADMIN" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="#D32F2F" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ID User"
-                android:textSize="12sp"
-                android:textColor="#757575" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="ID User" android:textSize="12sp" android:textColor="#757575" />
             <TextView
                 android:id="@+id/tvAdminIdUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADM-2025-001"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Hydronion-000" android:textSize="18sp" android:textStyle="bold"
                 android:textColor="#212121" />
+
             <Button
                 android:id="@+id/btnLogoutAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Logout"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="#D32F2F"
                 android:textColor="@android:color/white"
                 app:cornerRadius="12dp" />

@@ -2,6 +2,7 @@ package com.example.hydronion
 
 import LoginRequest
 import LoginResponse
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,47 +48,47 @@ class LoginFragment : Fragment() {
             return
         }
 
-        fun onLoginSuccess(role: String) {
-            val mainActivity = requireActivity() as MainActivity
-
-            when (role) {
-                "admin" -> mainActivity.switchToAdmin()
-                "user" -> mainActivity.switchToUser()
-                else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Role tidak dikenali",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-
         val request = LoginRequest(username, password)
 
         ApiClient.api.login(request).enqueue(object : retrofit2.Callback<LoginResponse> {
-
-            override fun onResponse(
-                call: Call<LoginResponse>,
-                response: Response<LoginResponse>
-            ) {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
+
+                    // --- SIMPAN DATA SESI KE SHAREDPREFERENCES ---
+                    val sharedPref = requireContext().getSharedPreferences("SessionHydronion", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putString("username", user.username)
+                        putString("role", user.role)
+                        // Mengambil ID dari database dan memformatnya
+                        putString("userId", "Hydronion-${user.id}")
+                        putBoolean("isLoggedIn", true)
+                        apply()
+                    }
+
                     onLoginSuccess(user.role)
                 } else {
-                    Toast.makeText(requireContext(), "Login gagal", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Login gagal: Periksa kembali akun Anda", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<LoginResponse>, t: Throwable) {
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Toast.makeText(requireContext(), "Gagal koneksi API", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun onLoginSuccess(role: String) {
+        val mainActivity = requireActivity() as MainActivity
+        when (role) {
+            "admin" -> mainActivity.switchToAdmin()
+            "user" -> mainActivity.switchToUser()
+            else -> Toast.makeText(requireContext(), "Role tidak dikenali", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
