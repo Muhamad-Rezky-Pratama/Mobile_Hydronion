@@ -18,6 +18,15 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // Gunakan sintaks Kotlin yang benar:
+        maven { url = uri("https://jitpack.io") }
+    }
+}
 
 rootProject.name = "Hydronion"
 include(":app")

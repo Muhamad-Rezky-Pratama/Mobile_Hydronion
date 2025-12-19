@@ -83,7 +83,12 @@ class MonitoringFragment : Fragment() {
             waterlevel = (5..25).random().toFloat(),
             suhu = (20..34).random().toFloat(),
             pH = listOf(5.8f, 6.0f, 6.2f, 6.5f, 6.8f).random(),
-            hum = (40..90).random()
+            hum = (40..90).random(),
+            // Tambahkan nilai ini agar tidak error:
+            avg_tds = 800,
+            avg_suhu = 25f,
+            avg_hum = 70,
+            avg_wl = 15f
         )
     }
 
@@ -100,7 +105,12 @@ class MonitoringFragment : Fragment() {
             waterlevel = (10..25).random().toFloat(),
             suhu = (22..30).random().toFloat(),
             pH = listOf(5.8f, 6.2f, 6.5f, 6.8f).random(),
-            hum = (60..90).random()
+            hum = (60..90).random(),
+            // Tambahkan nilai ini:
+            avg_tds = 900,
+            avg_suhu = 24f,
+            avg_hum = 75,
+            avg_wl = 18f
         )
 
         updateUI(data)
@@ -139,32 +149,34 @@ class MonitoringFragment : Fragment() {
     }
     private fun updateUI(data: SensorResponse) {
 
-        // Detail
+        // --- 1. MENGISI DETAIL SENSOR (Menampilkan Data Terakhir) ---
         binding.tvtds.text = getString(R.string.tds_format, data.tds)
         binding.tvwaterlevel.text = getString(R.string.water_level_format, data.waterlevel)
         binding.tvph.text = getString(R.string.ph_format, data.pH)
         binding.tvtemp.text = getString(R.string.temp_format, data.suhu)
         binding.tvhum.text = getString(R.string.hum_format, data.hum)
 
-        // Summary
+        // --- 2. MENGISI SISTEM MONITORING (Menampilkan Rata-Rata dari DB) ---
+        // Pastikan string format di strings.xml mendukung tipe data ini
         binding.avgTdsEcValue.text =
-            getString(R.string.tds_waterlevel_format, data.tds, data.waterlevel)
+            getString(R.string.tds_waterlevel_format, data.avg_tds ?: 0, data.avg_wl ?: 0f)
 
         binding.avgPhValue.text = getString(R.string.ph_format, data.pH)
 
         binding.avgHumTempValue.text =
-            getString(R.string.hum_temp_format, data.hum, data.suhu)
+            getString(R.string.hum_temp_format, data.avg_hum ?: 0, data.avg_suhu ?: 0f)
 
-        // Status
+        // --- 3. LOGIKA STATUS ---
         val status = checkOverallStatus(
-            data.tds.toDouble(),
+            (data.avg_tds ?: data.tds).toDouble(), // Status berdasarkan rata-rata
             data.pH.toDouble(),
-            data.suhu.toDouble(),
-            data.hum.toDouble()
+            (data.avg_suhu ?: data.suhu).toDouble(),
+            (data.avg_hum ?: data.hum).toDouble()
         )
 
         applyOverallStatusText(status)
     }
+
 
     private fun applyOverallStatusText(status: String) {
         val textColor: Int
