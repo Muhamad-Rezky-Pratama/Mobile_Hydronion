@@ -16,6 +16,10 @@
         <action
             android:id="@+id/action_login_to_user"
             app:destination="@id/userFragment" />
+
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
     </fragment>
 
     <fragment
@@ -28,5 +32,9 @@
         android:name="com.example.hydronion.MonitoringFragment"
         android:label="User Home" />
 
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.hydronion.RegisterFragment"
+        android:label="Register" />
 
 </navigation>

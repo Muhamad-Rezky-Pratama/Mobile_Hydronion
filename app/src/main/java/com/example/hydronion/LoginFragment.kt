@@ -30,6 +30,9 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.tvRegister.setOnClickListener {
+            findNavController().navigate(R.id.action_login_to_register)
+        }
         binding.btnLogin.setOnClickListener {
             handleLogin()
         }
