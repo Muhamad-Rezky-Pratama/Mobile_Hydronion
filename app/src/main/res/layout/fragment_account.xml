@@ -105,4 +105,13 @@
         android:layout_marginTop="4dp"
         android:textColor="#1976D2" />
 
+    <TextView
+        android:id="@+id/tvApi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="API Server: Localhost:8000"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#000"/>
+
 </LinearLayout>
