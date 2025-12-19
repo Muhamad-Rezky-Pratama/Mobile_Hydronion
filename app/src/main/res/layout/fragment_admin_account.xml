@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F8F9FA">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profil Admin"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1B5E20"
+        android:layout_marginBottom="20dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvAdminUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Muhamad Rezky Pratama"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Role"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvAdminRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADMIN"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#D32F2F"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID User"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+            <TextView
+                android:id="@+id/tvAdminIdUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADM-2025-001"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#212121" />
+            <Button
+                android:id="@+id/btnLogoutAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:backgroundTint="#D32F2F"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvApiInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="API Source: https://openweathermap.org/api"
+        android:textSize="10sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:textColor="#BDBDBD"/>
+
+</LinearLayout>
