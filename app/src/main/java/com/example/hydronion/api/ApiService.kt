@@ -1,3 +1,4 @@
+
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,4 +21,7 @@ interface ApiService {
     fun register(
         @Body request: RegisterRequest
     ): Call<RegisterResponse>
+
+    @GET("sensor/history")
+    fun getSensorHistory(): Call<ApiHistoryResponse>
 }

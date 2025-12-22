@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@android:color/transparent"
-    tools:context=".LogFragment">
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,87 +15,112 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Data Historis Hidroponik"
-            android:textColor="@color/dark_green_text"
-            android:textSize="24sp"
+            android:textColor="#2D4059"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginBottom="8dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button android:id="@+id/btnHarian" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Harian" style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                <Button android:id="@+id/btnMingguan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mingguan" style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                <Button android:id="@+id/btnBulanan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bulanan" style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="4dp">
-            <TextView
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="12dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="[Grafik Real-Time]"
-                android:textColor="@color/gray_secondary" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroupMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            app:singleSelection="true"
+            app:checkedButton="@+id/btnViewMean">
+            <Button
+                android:id="@+id/btnViewMean"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mean View" />
+            <Button
+                android:id="@+id/btnViewMinMax"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min/Max View" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ringkasan Rata-Rata Sensor"
-            android:textColor="@color/dark_green_text"
-            android:textSize="18sp"
+            android:text="Statistik Hari Ini"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:textSize="18sp"
+            android:textColor="#2D4059"
+            android:layout_marginBottom="12dp"/>
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="2"
-            android:useDefaultMargins="true">
+            android:alignmentMode="alignMargins"
+            android:padding="4dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp" app:cardElevation="2dp" app:cardBackgroundColor="@color/card_background">
+
+            <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="6dp" app:cardCornerRadius="16dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TDS Rata-Rata" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/dark_green_text"/>
-                    <TextView android:id="@+id/tvAvgTds" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 ppm" android:textColor="@color/green_primary" android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TDS (PPM)" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:id="@+id/tvTdsNow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Live: -" android:textSize="11sp"/>
+                    <TextView android:id="@+id/tvTdsMin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Min: -" android:textSize="11sp" android:textColor="#F44336"/>
+                    <TextView android:id="@+id/tvTdsMax" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Max: -" android:textSize="11sp" android:textColor="#2196F3"/>
+                    <TextView android:id="@+id/tvTdsMean" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mean: -" android:textStyle="bold" android:textColor="#4CAF50"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp" app:cardElevation="2dp" app:cardBackgroundColor="@color/card_background">
+            <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="6dp" app:cardCornerRadius="16dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tinggi Air" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/dark_green_text"/>
-                    <TextView android:id="@+id/tvAvgWaterLevel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 cm" android:textColor="@color/green_primary" android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Suhu Air" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:id="@+id/tvTempNow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Live: -" android:textSize="11sp"/>
+                    <TextView android:id="@+id/tvTempMin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Min: -" android:textSize="11sp" android:textColor="#F44336"/>
+                    <TextView android:id="@+id/tvTempMax" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Max: -" android:textSize="11sp" android:textColor="#2196F3"/>
+                    <TextView android:id="@+id/tvTempMean" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mean: -" android:textStyle="bold" android:textColor="#4CAF50"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp" app:cardElevation="2dp" app:cardBackgroundColor="@color/card_background">
+            <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="6dp" app:cardCornerRadius="16dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="pH Rata-Rata" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/dark_green_text"/>
-                    <TextView android:id="@+id/tvAvgPh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0" android:textColor="@color/green_primary" android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kelembaban" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:id="@+id/tvHumNow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Live: -" android:textSize="11sp"/>
+                    <TextView android:id="@+id/tvHumMin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Min: -" android:textSize="11sp" android:textColor="#F44336"/>
+                    <TextView android:id="@+id/tvHumMax" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Max: -" android:textSize="11sp" android:textColor="#2196F3"/>
+                    <TextView android:id="@+id/tvHumMean" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mean: -" android:textStyle="bold" android:textColor="#4CAF50"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp" app:cardElevation="2dp" app:cardBackgroundColor="@color/card_background">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Suhu Air" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/dark_green_text"/>
-                    <TextView android:id="@+id/tvAvgTemp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0°C" android:textColor="@color/green_primary" android:textSize="22sp" android:textStyle="bold"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp" android:layout_columnWeight="1" android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp" app:cardElevation="2dp" app:cardBackgroundColor="@color/card_background">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kelembaban" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/dark_green_text"/>
-                    <TextView android:id="@+id/tvAvgHum" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0%" android:textColor="@color/green_primary" android:textSize="22sp" android:textStyle="bold"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
         </GridLayout>
-
     </LinearLayout>
 </ScrollView>
