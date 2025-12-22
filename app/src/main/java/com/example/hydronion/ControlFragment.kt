@@ -1,5 +1,6 @@
 package com.example.hydronion
 
+import ControlRequest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,10 +45,45 @@ class ControlFragment : Fragment() {
     }
 
     private fun sendIoTCommand(device: String, command: String) {
-        // [Fungsi ini adalah placeholder. Ganti dengan kode MQTT/HTTP Anda.]
-        val status = if (command == "ON") "Dinyalakan" else "Dimatikan"
-        Toast.makeText(requireContext(), "$device berhasil $status", Toast.LENGTH_SHORT).show()
+
+        val request = ControlRequest(
+            device = device,
+            state = command
+        )
+
+        ApiClient.api.sendControl(request)
+            .enqueue(object : retrofit2.Callback<Void> {
+
+                override fun onResponse(
+                    call: retrofit2.Call<Void>,
+                    response: retrofit2.Response<Void>
+                ) {
+                    if (response.isSuccessful) {
+                        val status = if (command == "ON") "Dinyalakan" else "Dimatikan"
+                        Toast.makeText(
+                            requireContext(),
+                            "$device berhasil $status",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Gagal mengirim perintah",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Koneksi ke server gagal",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -8,8 +8,8 @@ interface ApiService {
     @GET("sensor/latest")
     fun getSensorData(): Call<ApiResponse>
 
-    @POST("api/control")
-    fun controlPump(@Body request: ControlRequest): Call<Void>
+    @POST("control")
+    fun sendControl(@Body request: ControlRequest): Call<Void>
 
     @POST("login")
     fun login(
