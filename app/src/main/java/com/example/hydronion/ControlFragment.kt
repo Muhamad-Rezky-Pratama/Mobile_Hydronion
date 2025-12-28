@@ -1,13 +1,19 @@
 package com.example.hydronion
 
 import ControlRequest
+import ControlResponse
+import ControlStateRequest
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.hydronion.databinding.FragmentControlBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ControlFragment : Fragment() {
 
@@ -26,43 +32,39 @@ class ControlFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- Listener untuk 3 Kontrol ---
-
-        // 1. Pompa Air
+        // Pompa Air
         binding.switchPompa.setOnCheckedChangeListener { _, isChecked ->
-            sendIoTCommand("POMPA AIR", if (isChecked) "ON" else "OFF")
+            sendIoTCommand("pompa", isChecked)
         }
 
-        // 2. Lampu LED
+        // Lampu LED
         binding.switchLed.setOnCheckedChangeListener { _, isChecked ->
-            sendIoTCommand("LAMPU LED", if (isChecked) "ON" else "OFF")
+            sendIoTCommand("lampu", isChecked)
         }
 
-        // 3. Humidifier
+        // Humidifier
         binding.switchHumidifier.setOnCheckedChangeListener { _, isChecked ->
-            sendIoTCommand("HUMIDIFIER", if (isChecked) "ON" else "OFF")
+            sendIoTCommand("humidifier", isChecked)
         }
     }
 
-    private fun sendIoTCommand(device: String, command: String) {
 
-        val request = ControlRequest(
-            device = device,
-            state = command
-        )
+    private fun sendIoTCommand(device: String, isOn: Boolean) {
+        val body = mapOf("state" to if (isOn) 1 else 0)
 
-        ApiClient.api.sendControl(request)
-            .enqueue(object : retrofit2.Callback<Void> {
+        ApiClient.api.controlDevice(device.lowercase(), body)
+            .enqueue(object : Callback<ControlResponse> {
 
                 override fun onResponse(
-                    call: retrofit2.Call<Void>,
-                    response: retrofit2.Response<Void>
+                    call: Call<ControlResponse>,
+                    response: Response<ControlResponse>
                 ) {
-                    if (response.isSuccessful) {
-                        val status = if (command == "ON") "Dinyalakan" else "Dimatikan"
+                    if (!isAdded) return
+
+                    if (response.isSuccessful && response.body()?.status == "success") {
                         Toast.makeText(
                             requireContext(),
-                            "$device berhasil $status",
+                            "${device.uppercase()} berhasil ${if (isOn) "DINYALAKAN" else "DIMATIKAN"}",
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
@@ -74,16 +76,20 @@ class ControlFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                override fun onFailure(
+                    call: Call<ControlResponse>,
+                    t: Throwable
+                ) {
+                    if (!isAdded) return
                     Toast.makeText(
                         requireContext(),
-                        "Koneksi ke server gagal",
+                        "Gagal koneksi ke server",
                         Toast.LENGTH_SHORT
                     ).show()
+                    Log.e("CONTROL_ERROR", t.message ?: "unknown error")
                 }
             })
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -3,14 +3,21 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("sensor/latest")
-    fun getSensorData(): Call<ApiResponse>
+    @GET("/")
+    fun getSensorData(
+        @Query("action") action: String = "fetch"
+    ): Call<SensorApiResponse>
 
-    @POST("control")
-    fun sendControl(@Body request: ControlRequest): Call<Void>
+    @POST("api/control/{device}")
+    fun controlDevice(
+        @Path("device") device: String,
+        @Body request: Map<String, Int>
+    ): Call<ControlResponse>
 
     @POST("login")
     fun login(

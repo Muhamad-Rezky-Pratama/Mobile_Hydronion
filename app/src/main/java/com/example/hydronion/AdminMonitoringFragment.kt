@@ -1,7 +1,7 @@
 package com.example.hydronion
 
-import ApiResponse
-import SensorResponse
+import SensorApiResponse
+import SensorData
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,16 +21,19 @@ class AdminMonitoringFragment : Fragment() {
     private var _binding: FragmentAdminMonitoringBinding? = null
     private val binding get() = _binding!!
 
-    // Handler untuk refresh data otomatis
     private val handler = Handler(Looper.getMainLooper())
     private val refreshRunnable = object : Runnable {
         override fun run() {
-            fetchAverageData()
-            handler.postDelayed(this, 3000) // Refresh tiap 3 detik
+            fetchSensorData()
+            handler.postDelayed(this, 3000)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAdminMonitoringBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,13 +41,12 @@ class AdminMonitoringFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Mulai ambil data
-        fetchAverageData()
+        fetchSensorData()
 
         binding.btnSendSuggestion.setOnClickListener {
             val text = binding.etAdminSuggestion.text.toString()
-            if (text.isNotEmpty()) {
-                Toast.makeText(requireContext(), "Instruksi terkirim ke Client!", Toast.LENGTH_SHORT).show()
+            if (text.isNotBlank()) {
+                Toast.makeText(requireContext(), "Instruksi terkirim", Toast.LENGTH_SHORT).show()
                 binding.etAdminSuggestion.text.clear()
             } else {
                 Toast.makeText(requireContext(), "Saran tidak boleh kosong", Toast.LENGTH_SHORT).show()
@@ -52,29 +54,39 @@ class AdminMonitoringFragment : Fragment() {
         }
     }
 
-    private fun fetchAverageData() {
-        ApiClient.api.getSensorData().enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val data = response.body()!!.data
-                    updateUI(data)
-                }
-            }
+    private fun fetchSensorData() {
+        ApiClient.api.getSensorData()
+            .enqueue(object : Callback<SensorApiResponse> {
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                Log.e("ADMIN_MONITOR", "Gagal load data: ${t.message}")
-            }
-        })
+                override fun onResponse(
+                    call: Call<SensorApiResponse>,
+                    response: Response<SensorApiResponse>
+                ) {
+                    val body = response.body()
+
+                    if (!response.isSuccessful || body?.sensor_data == null) {
+                        Log.w("ADMIN_MONITOR", "Data sensor kosong")
+                        return
+                    }
+
+                    updateUI(body.sensor_data)
+                }
+
+                override fun onFailure(call: Call<SensorApiResponse>, t: Throwable) {
+                    Log.e("ADMIN_MONITOR", "API Error: ${t.message}")
+                }
+            })
     }
 
-    private fun updateUI(data: SensorResponse) {
+    private fun updateUI(data: SensorData) {
+
+        fun Number?.safe(): String = this?.toString() ?: "-"
+
         binding.apply {
-            // Mengambil nilai rata-rata dari field avg_ di SensorResponse
-            tvAvgTds.text = "Rata-rata: ${data.avg_tds ?: data.tds} ppm"
-            tvAvgWater.text = "Rata-rata: ${data.avg_wl ?: data.waterlevel} cm"
-            tvAvgPh.text = "Rata-rata: ${String.format("%.1f", data.pH)}"
-            tvAvgTemp.text = "Rata-rata: ${(data.avg_suhu ?: data.suhu).toInt()}°C"
-            tvAvgHum.text = "Rata-rata: ${data.avg_hum ?: data.hum}%"
+            tvAvgTds.text = "TDS: ${data.avg_tds ?: data.tds ?: "-"} ppm"
+            tvAvgWater.text = "Suhu Air: ${data.avg_wl ?: data.avg_wl ?: "-"} °C"
+            tvAvgTemp.text = "Suhu: ${data.avg_suhu ?: data.suhu ?: "-"} °C"
+            tvAvgHum.text = "Kelembapan: ${data.avg_hum ?: data.hum ?: "-"} %"
         }
     }
 

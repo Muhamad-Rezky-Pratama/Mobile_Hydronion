@@ -1,6 +1,7 @@
 package com.example.hydronion
 
-import ApiResponse
+import SensorApiResponse
+import SensorData
 import SensorResponse
 import android.os.Bundle
 import android.util.Log
@@ -96,47 +97,54 @@ class MonitoringFragment : Fragment() {
         if (isLiveMode) {
             loadLiveData()
         } else {
-            loadDemoData()
+        //    loadDemoData()
         }
     }
-    private fun loadDemoData() {
-        val data = SensorResponse(
-            tds = (600..1200).random(),
-            waterlevel = (10..25).random().toFloat(),
-            suhu = (22..30).random().toFloat(),
-            pH = listOf(5.8f, 6.2f, 6.5f, 6.8f).random(),
-            hum = (60..90).random(),
+    //private fun loadDemoData() {
+    //    val data = SensorData(
+    //        tds = (600..1200).random().toFloat(),
+    //        suhu_air = (10..25).random().toFloat(),
+    //        suhu = (22..30).random().toFloat(),
+    //        //pH = listOf(5.8f, 6.2f, 6.5f, 6.8f).random(),
+    //        kelembapan = (60..90).random().toFloat(),
             // Tambahkan nilai ini:
-            avg_tds = 900,
-            avg_suhu = 24f,
-            avg_hum = 75,
-            avg_wl = 18f
-        )
+    //        avg_tds = 900,
+    //        avg_suhu = 24f,
+    //        avg_hum = 75
+    //   )
 
-        updateUI(data)
-    }
+    //    updateUI(data)
+    //}
     private fun loadLiveData() {
         ApiClient.api.getSensorData()
-            .enqueue(object : Callback<ApiResponse> {
+            .enqueue(object : Callback<SensorApiResponse> {
 
                 override fun onResponse(
-                    call: Call<ApiResponse>,
-                    response: Response<ApiResponse>
+                    call: Call<SensorApiResponse>,
+                    response: Response<SensorApiResponse>
                 ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        updateUI(response.body()!!.data)
-                    } else {
+                    if (!response.isSuccessful) {
                         Toast.makeText(requireContext(), "Response tidak valid", Toast.LENGTH_SHORT).show()
+                        return
                     }
+
+                    val body = response.body()
+                    val data = body?.sensor_data
+
+                    if (data == null) {
+                        Toast.makeText(requireContext(), "Data sensor belum tersedia", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    updateUI(data)
                 }
 
-                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                override fun onFailure(call: Call<SensorApiResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "Gagal koneksi API", Toast.LENGTH_SHORT).show()
                     Log.e("API_ERROR", t.message ?: "unknown error")
                 }
             })
     }
-
 
     private fun checkOverallStatus(tds: Double, ph: Double, airTemp: Double, humidity: Double): String {
         // Logika status hanya menggunakan TDS dan PH
@@ -147,36 +155,46 @@ class MonitoringFragment : Fragment() {
         }
         return "OPTIMAL"
     }
-    private fun updateUI(data: SensorResponse) {
 
-        // --- 1. MENGISI DETAIL SENSOR (Menampilkan Data Terakhir) ---
-        binding.tvtds.text = getString(R.string.tds_format, data.tds)
-        binding.tvwaterlevel.text = getString(R.string.water_level_format, data.waterlevel)
-        binding.tvph.text = getString(R.string.ph_format, data.pH)
-        binding.tvtemp.text = getString(R.string.temp_format, data.suhu)
-        binding.tvhum.text = getString(R.string.hum_format, data.hum)
+    private fun updateUI(data: SensorData) {
 
-        // --- 2. MENGISI SISTEM MONITORING (Menampilkan Rata-Rata dari DB) ---
-        // Pastikan string format di strings.xml mendukung tipe data ini
+        fun Number?.safeDouble(): Double = this?.toDouble() ?: 0.0
+        fun Number?.safeInt(): Int = this?.toInt() ?: 0
+
+        if (data.tds == null && data.avg_tds == null) {
+            binding.gaugeStatusText.text = "MENUNGGU DATA"
+            binding.gaugeProgressBar.progress = 0
+            return
+        }
+
+        // DETAIL SENSOR
+        binding.tvtds.text = getString(R.string.tds_format, data.tds.safeInt())
+        binding.tvwaterlevel.text = getString(R.string.water_level_format, data.waterlevel.safeDouble())
+        binding.tvph.text = getString(R.string.ph_format, data.pH.safeDouble())
+        binding.tvtemp.text = getString(R.string.temp_format, data.suhu.safeDouble())
+
+        // RATA-RATA
         binding.avgTdsEcValue.text =
-            getString(R.string.tds_waterlevel_format, data.avg_tds ?: 0, data.avg_wl ?: 0f)
-
-        binding.avgPhValue.text = getString(R.string.ph_format, data.pH)
+            getString(R.string.tds_suhu_format,
+                data.avg_tds.safeInt(),
+                data.avg_suhu.safeDouble()
+            )
 
         binding.avgHumTempValue.text =
-            getString(R.string.hum_temp_format, data.avg_hum ?: 0, data.avg_suhu ?: 0f)
+            getString(R.string.hum_temp_format,
+                data.avg_hum.safeInt(),
+                data.avg_suhu.safeDouble()
+            )
 
-        // --- 3. LOGIKA STATUS ---
         val status = checkOverallStatus(
-            (data.avg_tds ?: data.tds).toDouble(), // Status berdasarkan rata-rata
-            data.pH.toDouble(),
-            (data.avg_suhu ?: data.suhu).toDouble(),
-            (data.avg_hum ?: data.hum).toDouble()
+            (data.avg_tds ?: data.tds).safeDouble(),
+            data.pH.safeDouble(),
+            (data.avg_suhu ?: data.suhu).safeDouble(),
+            (data.avg_hum ?: data.hum).safeDouble()
         )
 
         applyOverallStatusText(status)
     }
-
 
     private fun applyOverallStatusText(status: String) {
         val textColor: Int
