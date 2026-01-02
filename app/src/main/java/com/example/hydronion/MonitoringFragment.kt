@@ -81,7 +81,6 @@ class MonitoringFragment : Fragment() {
     private fun generateSimulatedSensorData(): SensorResponse {
         return SensorResponse(
             tds = (300..1200).random(),
-            waterlevel = (5..25).random().toFloat(),
             suhu = (20..34).random().toFloat(),
             pH = listOf(5.8f, 6.0f, 6.2f, 6.5f, 6.8f).random(),
             hum = (40..90).random(),
@@ -169,7 +168,6 @@ class MonitoringFragment : Fragment() {
 
         // DETAIL SENSOR
         binding.tvtds.text = getString(R.string.tds_format, data.tds.safeInt())
-        binding.tvwaterlevel.text = getString(R.string.water_level_format, data.waterlevel.safeDouble())
         binding.tvph.text = getString(R.string.ph_format, data.pH.safeDouble())
         binding.tvtemp.text = getString(R.string.temp_format, data.suhu.safeDouble())
 

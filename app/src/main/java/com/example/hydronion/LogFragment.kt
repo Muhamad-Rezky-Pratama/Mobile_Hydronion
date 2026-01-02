@@ -90,7 +90,6 @@ class LogFragment : Fragment(R.layout.fragment_log) {
                 hum = weekGroup.map { it.hum }.average().toInt(),
                 kelembapan = weekGroup.map { it.kelembapan ?: it.hum.toFloat() }.average().toFloat(),
                 pH = weekGroup.map { it.pH }.average().toFloat(),
-                waterlevel = weekGroup.map { it.waterlevel }.average().toFloat(),
                 timestamp = weekLabel
             )
         }
@@ -110,7 +109,6 @@ class LogFragment : Fragment(R.layout.fragment_log) {
                 hum = monthGroup.map { it.hum }.average().toInt(),
                 kelembapan = monthGroup.map { monthGroup.map { it.kelembapan ?: it.hum.toFloat() }.average().toFloat() }.first(),
                 pH = monthGroup.map { it.pH }.average().toFloat(),
-                waterlevel = monthGroup.map { it.waterlevel }.average().toFloat(),
                 timestamp = monthLabel
             )
         }

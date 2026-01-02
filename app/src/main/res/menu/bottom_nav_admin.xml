@@ -3,10 +3,10 @@
     <item
         android:id="@+id/adminAccountFragment"
         android:icon="@drawable/ic_account"
-        android:title="Akun" />
+        android:title="Account" />
     <item
         android:id="@+id/adminMonitoringFragment"
         android:icon="@drawable/ic_home"
-        android:title="Monitor" />
+        android:title="Status" />
 
 </menu>
