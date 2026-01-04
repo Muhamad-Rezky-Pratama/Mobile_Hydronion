@@ -41,11 +41,6 @@ class ControlFragment : Fragment() {
         binding.switchLed.setOnCheckedChangeListener { _, isChecked ->
             sendIoTCommand("lampu", isChecked)
         }
-
-        // Humidifier
-        binding.switchHumidifier.setOnCheckedChangeListener { _, isChecked ->
-            sendIoTCommand("humidifier", isChecked)
-        }
     }
 
 
