@@ -1,12 +1,23 @@
-data class SensorData(
-    val tds: Int?,
-    val waterlevel: Float?,
-    val suhu: Float?,
-    val pH: Float?,
-    val hum: Int?,
+import com.google.gson.annotations.SerializedName
 
-    val avg_tds: Int? = null,
-    val avg_suhu: Float? = null,
-    val avg_hum: Int? = null,
-    val avg_wl: Float? = null
+data class SensorData(
+
+    @SerializedName("sensor_id")
+    val sensorId: Int? = null,
+
+    val tds: Float?,
+
+    val suhu: Float?,
+
+    @SerializedName("suhu_air")
+    val suhuAir: Float?,
+
+    val kelembapan: Float?,
+
+    val status: String? = null,
+
+    val timestamp: String?,
+
+    @SerializedName("ip_address")
+    val ipAddress: String? = null
 )
