@@ -1,8 +1,8 @@
 package com.example.hydronion
 
-import ApiClient
 import SensorApiResponse
 import SensorData
+import SensorResponse
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,20 +11,22 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.hydronion.databinding.FragmentMonitoringBinding
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
+
 class MonitoringFragment : Fragment() {
 
     private var _binding: FragmentMonitoringBinding? = null
-
     private val binding get() = _binding!!
+
+    private var isLiveMode = true
 
     private val WEATHER_API_KEY = "6413722b7606fafed462799567af2a9a"
 
@@ -76,64 +78,117 @@ class MonitoringFragment : Fragment() {
         )
         queue.add(stringRequest)
     }
-
-    private fun updateSensorData() {
-        loadLiveData()
+    private fun generateSimulatedSensorData(): SensorResponse {
+        return SensorResponse(
+            tds = (300..1200).random(),
+            suhu = (20..34).random().toFloat(),
+            pH = listOf(5.8f, 6.0f, 6.2f, 6.5f, 6.8f).random(),
+            hum = (40..90).random(),
+            // Tambahkan nilai ini agar tidak error:
+            avg_tds = 800,
+            avg_suhu = 25f,
+            avg_hum = 70,
+            avg_wl = 15f
+        )
     }
 
+    private fun updateSensorData() {
+        if (isLiveMode) {
+            loadLiveData()
+        } else {
+        //    loadDemoData()
+        }
+    }
+    //private fun loadDemoData() {
+    //    val data = SensorData(
+    //        tds = (600..1200).random().toFloat(),
+    //        suhu_air = (10..25).random().toFloat(),
+    //        suhu = (22..30).random().toFloat(),
+    //        //pH = listOf(5.8f, 6.2f, 6.5f, 6.8f).random(),
+    //        kelembapan = (60..90).random().toFloat(),
+            // Tambahkan nilai ini:
+    //        avg_tds = 900,
+    //        avg_suhu = 24f,
+    //        avg_hum = 75
+    //   )
+
+    //    updateUI(data)
+    //}
     private fun loadLiveData() {
-        ApiClient.api.getSensorData("fetch")
+        ApiClient.api.getSensorData()
             .enqueue(object : Callback<SensorApiResponse> {
-                private var isFirstFetch = true
 
                 override fun onResponse(
                     call: Call<SensorApiResponse>,
                     response: Response<SensorApiResponse>
                 ) {
-                    val body = response.body()
-
-                    if (isFirstFetch && body?.sensorData == null) {
-                        isFirstFetch = false
-                        loadLiveData()
+                    if (!response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Response tidak valid", Toast.LENGTH_SHORT).show()
                         return
                     }
 
-                    updateUI(body!!.sensorData!!)
+                    val body = response.body()
+                    val data = body?.sensor_data
+
+                    if (data == null) {
+                        Toast.makeText(requireContext(), "Data sensor belum tersedia", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    updateUI(data)
                 }
 
                 override fun onFailure(call: Call<SensorApiResponse>, t: Throwable) {
-                    Log.e("API_FAIL", t.message ?: "error")
+                    Toast.makeText(requireContext(), "Gagal koneksi API", Toast.LENGTH_SHORT).show()
+                    Log.e("API_ERROR", t.message ?: "unknown error")
                 }
             })
     }
 
-    private fun checkOverallStatus(
-        tds: Double,
-        suhu: Double,
-        kelembapan: Double
-    ): String {
-        return when {
-            tds < 500 || tds > 1200 || suhu < 15 || suhu > 35 -> "KRITIS"
-            tds < 700 || tds > 1000 || suhu < 20 || suhu > 30 -> "PERHATIAN"
-            else -> "OPTIMAL"
+    private fun checkOverallStatus(tds: Double, ph: Double, airTemp: Double, humidity: Double): String {
+        // Logika status hanya menggunakan TDS dan PH
+        if (ph < 5.5 || ph > 7.0 || tds < 600.0 || tds > 1200.0) {
+            return "KRITIS"
+        } else if (ph < 5.8 || ph > 6.5 || tds < 800.0 || tds > 1000.0) {
+            return "PERHATIAN"
         }
+        return "OPTIMAL"
     }
 
     private fun updateUI(data: SensorData) {
-        if (!isAdded || _binding == null) return
 
-        val tds = data.tds ?: 0f
-        val suhu = data.suhu ?: 0f
-        val hum = data.kelembapan ?: 0f
+        fun Number?.safeDouble(): Double = this?.toDouble() ?: 0.0
+        fun Number?.safeInt(): Int = this?.toInt() ?: 0
 
-        binding.tvtds.text = "$tds ppm"
-        binding.tvtemp.text = "$suhu °C"
-        binding.tvhum.text = "${hum.toInt()}%"
+        if (data.tds == null && data.avg_tds == null) {
+            binding.gaugeStatusText.text = "MENUNGGU DATA"
+            binding.gaugeProgressBar.progress = 0
+            return
+        }
+
+        // DETAIL SENSOR
+        binding.tvtds.text = getString(R.string.tds_format, data.tds.safeInt())
+        binding.tvph.text = getString(R.string.ph_format, data.pH.safeDouble())
+        binding.tvtemp.text = getString(R.string.temp_format, data.suhu.safeDouble())
+
+        // RATA-RATA
+        binding.avgTdsEcValue.text =
+            getString(R.string.tds_suhu_format,
+                data.avg_tds.safeInt(),
+                data.avg_suhu.safeDouble()
+            )
+
+        binding.avgHumTempValue.text =
+            getString(R.string.hum_temp_format,
+                data.avg_hum.safeInt(),
+                data.avg_suhu.safeDouble()
+            )
 
         val status = checkOverallStatus(
-            tds = tds.toDouble(),
-            suhu = suhu.toDouble(),
-            kelembapan = hum.toDouble()
+            (data.avg_tds ?: data.tds).safeDouble(),
+            data.pH.safeDouble(),
+            (data.avg_suhu ?: data.suhu).safeDouble(),
+            (data.avg_hum ?: data.hum).safeDouble()
         )
 
         applyOverallStatusText(status)
@@ -171,10 +226,8 @@ class MonitoringFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        handler.removeCallbacksAndMessages(null)
         _binding = null
     }
-
     private val handler = android.os.Handler(android.os.Looper.getMainLooper())
 
     private val updater = object : Runnable {
@@ -191,7 +244,7 @@ class MonitoringFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        handler.removeCallbacksAndMessages(null)
+        handler.removeCallbacks(updater)
     }
 
 }

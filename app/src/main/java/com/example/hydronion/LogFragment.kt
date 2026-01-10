@@ -1,7 +1,8 @@
 package com.example.hydronion
 
-import ApiClient
-import SensorData
+import ApiResponse
+import ApiHistoryResponse
+import SensorResponse
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -9,22 +10,18 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.hydronion.databinding.FragmentLogBinding
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class LogFragment : Fragment(R.layout.fragment_log) {
 
     private var _binding: FragmentLogBinding? = null
     private val binding get() = _binding!!
-    private val historyData = mutableListOf<SensorData>()
+    private val historyData = mutableListOf<SensorResponse>()
     private var isMeanMode = true
     private var currentFilter = "Harian"
 
@@ -44,27 +41,18 @@ class LogFragment : Fragment(R.layout.fragment_log) {
     }
 
     private fun loadHistoryFromServer() {
-        ApiClient.api.getSensorHistory()
-            .enqueue(object : Callback<List<SensorData>> {
-
-                override fun onResponse(
-                    call: Call<List<SensorData>>,
-                    response: Response<List<SensorData>>
-                ) {
-                    if (!response.isSuccessful || response.body().isNullOrEmpty()) {
-                        Log.e("API_LOG", "History kosong")
-                        return
-                    }
-
+        ApiClient.api.getSensorHistory().enqueue(object : Callback<ApiHistoryResponse> {
+            override fun onResponse(call: Call<ApiHistoryResponse>, response: Response<ApiHistoryResponse>) {
+                if (response.isSuccessful && response.body() != null) {
                     historyData.clear()
-                    historyData.addAll(response.body()!!)
+                    historyData.addAll(response.body()!!.data)
                     refreshUI()
                 }
-
-                override fun onFailure(call: Call<List<SensorData>>, t: Throwable) {
-                    Log.e("API_LOG", "Gagal load history", t)
-                }
-            })
+            }
+            override fun onFailure(call: Call<ApiHistoryResponse>, t: Throwable) {
+                Log.e("API_LOG", "Gagal load history: ${t.message}")
+            }
+        })
     }
 
     private fun refreshUI() {
@@ -79,11 +67,7 @@ class LogFragment : Fragment(R.layout.fragment_log) {
         updateStatistics(filteredData)
     }
 
-    private fun processFilteredData(
-        rawData: List<SensorData>,
-        filter: String
-    ): List<SensorData>
-    {
+    private fun processFilteredData(rawData: List<SensorResponse>, filter: String): List<SensorResponse> {
         return when (filter) {
             "Harian" -> rawData.takeLast(24)
             "Mingguan" -> groupDataByWeek(rawData)
@@ -92,60 +76,66 @@ class LogFragment : Fragment(R.layout.fragment_log) {
         }
     }
 
-    private fun groupDataByWeek(data: List<SensorData>): List<SensorData> {
+    private fun groupDataByWeek(data: List<SensorResponse>): List<SensorResponse> {
         val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
         return data.groupBy {
             val date = try { sdf.parse(it.timestamp ?: "") } catch (e: Exception) { Date() }
             calendar.time = date ?: Date()
             "W${calendar.get(Calendar.WEEK_OF_MONTH)}"
-        }.map { (weekLabel, group) ->
-            SensorData(
-                tds = group.mapNotNull { it.tds }.average().toFloat(),
-                suhuAir = group.mapNotNull { it.suhuAir }.average().toFloat(),
-                suhu = group.mapNotNull { it.suhu }.average().toFloat(),
-                kelembapan = group.mapNotNull { it.kelembapan }.average().toFloat(),
+        }.map { (weekLabel, weekGroup) ->
+            SensorResponse(
+                tds = weekGroup.map { it.tds }.average().toInt(),
+                suhu = weekGroup.map { it.suhu }.average().toFloat(),
+                hum = weekGroup.map { it.hum }.average().toInt(),
+                kelembapan = weekGroup.map { it.kelembapan ?: it.hum.toFloat() }.average().toFloat(),
+                pH = weekGroup.map { it.pH }.average().toFloat(),
                 timestamp = weekLabel
             )
         }
     }
 
-    private fun groupDataByMonth(data: List<SensorData>): List<SensorData> {
+    private fun groupDataByMonth(data: List<SensorResponse>): List<SensorResponse> {
         val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
         return data.groupBy {
             val date = try { sdf.parse(it.timestamp ?: "") } catch (e: Exception) { Date() }
             calendar.time = date ?: Date()
             calendar.get(Calendar.MONTH).toString()
-        }.map { (monthLabel, group) ->
-            SensorData(
-                tds = group.mapNotNull { it.tds }.average().toFloat(),
-                suhuAir = group.mapNotNull { it.suhuAir }.average().toFloat(),
-                suhu = group.mapNotNull { it.suhu }.average().toFloat(),
-                kelembapan = group.mapNotNull { it.kelembapan }.average().toFloat(),
+        }.map { (monthLabel, monthGroup) ->
+            SensorResponse(
+                tds = monthGroup.map { it.tds }.average().toInt(),
+                suhu = monthGroup.map { it.suhu }.average().toFloat(),
+                hum = monthGroup.map { it.hum }.average().toInt(),
+                kelembapan = monthGroup.map { monthGroup.map { it.kelembapan ?: it.hum.toFloat() }.average().toFloat() }.first(),
+                pH = monthGroup.map { it.pH }.average().toFloat(),
                 timestamp = monthLabel
             )
         }
     }
 
-    private fun updateMultiChart(data: List<SensorData>) {
+    private fun updateMultiChart(data: List<SensorResponse>) {
         val tdsEntries = mutableListOf<Entry>()
         val suhuEntries = mutableListOf<Entry>()
         val humEntries = mutableListOf<Entry>()
 
-        data.forEachIndexed { i, d ->
-            tdsEntries.add(Entry(i.toFloat(), d.tds ?: 0f))
-            suhuEntries.add(Entry(i.toFloat(), d.suhu ?: 0f))
-            humEntries.add(Entry(i.toFloat(), d.kelembapan ?: 0f))
+
+        data.mapIndexed { i, d ->
+            // Perbaikan Logika Mean: Menghitung rata-rata kumulatif dari list data yang difilter
+            val tdsVal = if (isMeanMode) data.take(i + 1).map { it.tds }.average().toFloat() else d.tds.toFloat()
+            val suhuVal = if (isMeanMode) data.take(i + 1).map { it.suhu }.average().toFloat() else d.suhu
+            val humVal = if (isMeanMode) data.take(i + 1).map { it.kelembapan ?: it.hum.toFloat() }.average().toFloat() else (d.kelembapan ?: d.hum.toFloat())
+
+            tdsEntries.add(Entry(i.toFloat(), tdsVal))
+            suhuEntries.add(Entry(i.toFloat(), suhuVal))
+            humEntries.add(Entry(i.toFloat(), humVal))
         }
 
-        binding.lineChart.data = LineData(
-            createDataSet(tdsEntries, "TDS", Color.BLUE),
-            createDataSet(suhuEntries, "Suhu", Color.RED),
-            createDataSet(humEntries, "Kelembapan", Color.GREEN)
-        )
+        val tdsSet = createDataSet(tdsEntries, "TDS", Color.rgb(155, 89, 182))
+        val suhuSet = createDataSet(suhuEntries, "Suhu", Color.RED)
+        val humSet = createDataSet(humEntries, "Lembap", Color.rgb(26, 188, 156))
+
+        binding.lineChart.data = LineData(tdsSet, suhuSet, humSet)
         binding.lineChart.invalidate()
     }
 
@@ -160,25 +150,29 @@ class LogFragment : Fragment(R.layout.fragment_log) {
         }
     }
 
-    private fun updateStatistics(data: List<SensorData>) {
-        if (data.isEmpty()) return
-        val last = data.last()
-
+    private fun updateStatistics(data: List<SensorResponse>) {
+        val lastData = data.last()
         binding.apply {
-            tvTdsNow.text = "Live: ${last.tds ?: 0}"
-            tvTdsMin.text = "Min: ${data.minOf { it.tds ?: 0f }}"
-            tvTdsMax.text = "Max: ${data.maxOf { it.tds ?: 0f }}"
-            tvTdsMean.text = "Mean: ${data.mapNotNull { it.tds }.average().toInt()}"
 
-            tvTempNow.text = "Live: ${last.suhu ?: 0f}"
-            tvTempMin.text = "Min: ${data.minOf { it.suhu ?: 0f }}"
-            tvTempMax.text = "Max: ${data.maxOf { it.suhu ?: 0f }}"
-            tvTempMean.text = "Mean: ${data.mapNotNull { it.suhu }.average().toInt()}"
+            // TDS (PPM)
+            tvTdsNow.text = "Live: ${lastData.tds}"
+            tvTdsMin.text = "Min: ${data.minOf { it.tds }}"
+            tvTdsMax.text = "Max: ${data.maxOf { it.tds }}"
+            tvTdsMean.text = "Mean: ${data.map { it.tds }.average().toInt()}"
 
-            tvHumNow.text = "Live: ${last.kelembapan ?: 0f}%"
-            tvHumMin.text = "Min: ${data.minOf { it.kelembapan ?: 0f }.toInt()}%"
-            tvHumMax.text = "Max: ${data.maxOf { it.kelembapan ?: 0f }.toInt()}%"
-            tvHumMean.text = "Mean: ${data.mapNotNull { it.kelembapan }.average().toInt()}%"
+            // Suhu Air
+            tvTempNow.text = "Live: ${lastData.suhu}"
+            tvTempMin.text = "Min: ${data.minOf { it.suhu }}"
+            tvTempMax.text = "Max: ${data.maxOf { it.suhu }}"
+            tvTempMean.text = "Mean: ${data.map { it.suhu.toDouble() }.average().toInt()}"
+
+            // Kelembaban
+            val h = (lastData.kelembapan ?: lastData.hum.toFloat())
+            tvHumNow.text = "Live: ${h.toInt()}%"
+            tvHumMin.text = "Min: ${data.minOf { it.kelembapan ?: it.hum.toFloat() }.toInt()}%"
+            tvHumMax.text = "Max: ${data.maxOf { it.kelembapan ?: it.hum.toFloat() }.toInt()}%"
+            tvHumMean.text = "Mean: ${data.map { (it.kelembapan ?: it.hum.toFloat()).toDouble() }.average().toInt()}%"
+
         }
     }
 
