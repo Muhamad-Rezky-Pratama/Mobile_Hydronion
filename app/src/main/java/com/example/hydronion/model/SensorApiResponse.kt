@@ -1,4 +1,8 @@
+import com.google.gson.annotations.SerializedName
+
 data class SensorApiResponse(
     val status: String,
-    val sensorData: SensorData
+
+    @SerializedName("sensor_data")
+    val sensorData: SensorData?
 )

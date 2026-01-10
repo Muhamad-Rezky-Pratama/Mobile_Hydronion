@@ -260,7 +260,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tvph"
+                                android:id="@+id/tvsuhu"
                                 android:layout_width="56dp"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
@@ -343,7 +343,7 @@
                             android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
                             android:orientation="vertical" android:gravity="end">
                             <TextView android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"
-                                android:text="Suhu Air" android:textColor="@color/dark_green_text"
+                                android:text="Suhu Udara" android:textColor="@color/dark_green_text"
                                 android:textSize="14sp" android:textStyle="bold" android:gravity="top"/>
 
                             <TextView

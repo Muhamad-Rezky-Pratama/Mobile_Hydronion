@@ -1,4 +1,5 @@
 
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -8,10 +9,14 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("/")
+    @GET("/sensor_data")
     fun getSensorData(
-        @Query("action") action: String = "fetch"
     ): Call<SensorApiResponse>
+
+    @GET("/sensor_data")
+    fun getSensorHistory(
+        @Query("action") action: String = "history"
+    ): Call<ApiHistoryResponse>
 
     @POST("api/control/{device}")
     fun controlDevice(
@@ -26,9 +31,6 @@ interface ApiService {
 
     @POST("register")
     fun register(
-        @Body request: RegisterRequest
+        @Body request : RegisterRequest
     ): Call<RegisterResponse>
-
-    @GET("sensor/history")
-    fun getSensorHistory(): Call<ApiHistoryResponse>
 }
