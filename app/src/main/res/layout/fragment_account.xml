@@ -109,7 +109,34 @@
         android:id="@+id/tvApi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="API Server: Localhost:8000"
+        android:text="API Server: https://nonaccusing-dani-unreined.ngrok-free.dev/"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#000"/>
+
+    <TextView
+        android:id="@+id/tvmemberinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dev. Team"
+        android:textSize="20sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#000"/>
+
+    <TextView
+        android:id="@+id/tvmember1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/member1"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#000"/>
+
+    <TextView
+        android:id="@+id/tvmember2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/member2"
         android:textSize="12sp"
         android:layout_marginTop="4dp"
         android:textColor="#000"/>

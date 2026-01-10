@@ -10,4 +10,6 @@
     <string name="hum_temp_format">%1$d%% / %2$.1f°C</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="member1">152023050 - Muhammad Alfarizal Hafidz</string>
+    <string name="member2">152023063 - Muhamad Rezky Pratama</string>
 </resources>
