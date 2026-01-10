@@ -1,20 +1,12 @@
 package com.example.hydronion
 
-import SensorResponse
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.hydronion.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.example.hydronion.MonitoringFragment
-import com.example.hydronion.ControlFragment
-import com.example.hydronion.LogFragment
 
 class MainActivity : AppCompatActivity() {
 
