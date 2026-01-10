@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName
 data class SensorData(
 
     @SerializedName("sensor_id")
-    val sensorId: Int?,
+    val sensorId: Int? = null,
 
     val tds: Float?,
 
@@ -14,10 +14,10 @@ data class SensorData(
 
     val kelembapan: Float?,
 
-    val status: String?,
+    val status: String? = null,
 
     val timestamp: String?,
 
     @SerializedName("ip_address")
-    val ipAddress: String?
+    val ipAddress: String? = null
 )
