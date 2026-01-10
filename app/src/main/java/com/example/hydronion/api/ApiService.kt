@@ -11,12 +11,10 @@ interface ApiService {
 
     @GET("/sensor_data")
     fun getSensorData(
-    ): Call<SensorApiResponse>
-
-    @GET("/")
-    fun getSensorHistory(
-        @Query("action") action: String = "history"
     ): Call<List<SensorData>>
+
+    @GET("/sensor_data?limit=200")
+    fun getSensorHistory(): Call<List<SensorData>>
 
     @POST("api/control/{device}")
     fun controlDevice(

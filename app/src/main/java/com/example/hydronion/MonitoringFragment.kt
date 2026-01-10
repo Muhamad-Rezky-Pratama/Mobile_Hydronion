@@ -83,26 +83,23 @@ class MonitoringFragment : Fragment() {
 
     private fun loadLiveData() {
         ApiClient.api.getSensorData()
-            .enqueue(object : Callback<SensorApiResponse> {
-                private var isFirstFetch = true
+            .enqueue(object : Callback<List<SensorData>> {
 
                 override fun onResponse(
-                    call: Call<SensorApiResponse>,
-                    response: Response<SensorApiResponse>
+                    call: Call<List<SensorData>>,
+                    response: Response<List<SensorData>>
                 ) {
-                    val body = response.body()
-
-                    if (isFirstFetch && body?.sensorData == null) {
-                        isFirstFetch = false
-                        loadLiveData()
+                    if (!response.isSuccessful || response.body().isNullOrEmpty()) {
+                        Log.e("API", "Data kosong")
                         return
                     }
 
-                    updateUI(body!!.sensorData!!)
+                    val latestData = response.body()!!.last()
+                    updateUI(latestData)
                 }
 
-                override fun onFailure(call: Call<SensorApiResponse>, t: Throwable) {
-                    Log.e("API_FAIL", t.message ?: "error")
+                override fun onFailure(call: Call<List<SensorData>>, t: Throwable) {
+                    Log.e("API", "Gagal load live", t)
                 }
             })
     }
@@ -125,10 +122,13 @@ class MonitoringFragment : Fragment() {
         val tds = data.tds ?: 0f
         val suhu = data.suhu ?: 0f
         val hum = data.kelembapan ?: 0f
+        val suhuAir = data.suhuAir ?: 0f
 
         binding.tvtds.text = "$tds ppm"
-        binding.tvtemp.text = "$suhu °C"
+        binding.tvairtemp.text = "$suhu °C"
         binding.tvhum.text = "${hum.toInt()}%"
+        binding.tvwatertemp.text = "$suhuAir °C"
+
 
         val status = checkOverallStatus(
             tds = tds.toDouble(),
