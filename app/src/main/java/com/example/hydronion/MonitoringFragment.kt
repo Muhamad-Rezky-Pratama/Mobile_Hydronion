@@ -2,7 +2,6 @@ package com.example.hydronion
 
 import SensorApiResponse
 import SensorData
-import SensorResponse
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,22 +15,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
-
 class MonitoringFragment : Fragment() {
 
     private var _binding: FragmentMonitoringBinding? = null
     private val binding get() = _binding!!
 
-    private var isLiveMode = true
-
-    private val WEATHER_API_KEY = "6413722b7606fafed462799567af2a9a"
+    private var retryFetchOnce = true   // ⬅️ penting
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMonitoringBinding.inflate(inflater, container, false)
@@ -40,82 +33,14 @@ class MonitoringFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        updateSensorData()
-
-        fetchPublicWeatherData("Bandung")
-
-        binding.gaugeStatusText.setOnClickListener {
-            Toast.makeText(requireContext(), "Menampilkan Detail Status...", Toast.LENGTH_SHORT).show()
-        }
-    }
-    private fun fetchPublicWeatherData(city: String) {
-        val url = "https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$WEATHER_API_KEY&units=metric"
-
-        val queue = Volley.newRequestQueue(requireContext())
-        val stringRequest = StringRequest(
-            Request.Method.GET, url,
-            { response ->
-                try {
-                    val jsonResponse = JSONObject(response)
-                    val main = jsonResponse.getJSONObject("main")
-                    val weatherArray = jsonResponse.getJSONArray("weather")
-                    val description = weatherArray.getJSONObject(0).getString("description")
-                    val temp = main.getDouble("temp")
-                    val cityName = jsonResponse.getString("name")
-
-                    // Update UI Card Cuaca yang baru di XML [cite: 31, 32]
-                    binding.tvLocation.text = "Lokasi: $cityName"
-                    binding.tvWeatherDesc.text = "Cuaca Luar: ${description.uppercase()}"
-                    binding.tvExternalTemp.text = "${temp.toInt()}°C"
-                } catch (e: Exception) {
-                    Log.e("WEATHER_ERROR", e.message ?: "Parsing error")
-                }
-            },
-            { error ->
-                binding.tvLocation.text = "Gagal memuat cuaca"
-            }
-        )
-        queue.add(stringRequest)
-    }
-    private fun generateSimulatedSensorData(): SensorResponse {
-        return SensorResponse(
-            tds = (300..1200).random(),
-            suhu = (20..34).random().toFloat(),
-            pH = listOf(5.8f, 6.0f, 6.2f, 6.5f, 6.8f).random(),
-            hum = (40..90).random(),
-            // Tambahkan nilai ini agar tidak error:
-            avg_tds = 800,
-            avg_suhu = 25f,
-            avg_hum = 70,
-            avg_wl = 15f
-        )
+        fetchSensorData()
     }
 
-    private fun updateSensorData() {
-        if (isLiveMode) {
-            loadLiveData()
-        } else {
-        //    loadDemoData()
-        }
-    }
-    //private fun loadDemoData() {
-    //    val data = SensorData(
-    //        tds = (600..1200).random().toFloat(),
-    //        suhu_air = (10..25).random().toFloat(),
-    //        suhu = (22..30).random().toFloat(),
-    //        //pH = listOf(5.8f, 6.2f, 6.5f, 6.8f).random(),
-    //        kelembapan = (60..90).random().toFloat(),
-            // Tambahkan nilai ini:
-    //        avg_tds = 900,
-    //        avg_suhu = 24f,
-    //        avg_hum = 75
-    //   )
-
-    //    updateUI(data)
-    //}
-    private fun loadLiveData() {
-        ApiClient.api.getSensorData()
+    // =====================================================
+    // API FETCH
+    // =====================================================
+    private fun fetchSensorData() {
+        ApiClient.api.getSensorData(action = "fetch")
             .enqueue(object : Callback<SensorApiResponse> {
 
                 override fun onResponse(
@@ -123,128 +48,106 @@ class MonitoringFragment : Fragment() {
                     response: Response<SensorApiResponse>
                 ) {
                     if (!response.isSuccessful) {
-                        Toast.makeText(requireContext(), "Response tidak valid", Toast.LENGTH_SHORT).show()
+                        showError("Response tidak valid")
                         return
                     }
 
                     val body = response.body()
-                    val data = body?.sensor_data
 
-                    if (data == null) {
-                        Toast.makeText(requireContext(), "Data sensor belum tersedia", Toast.LENGTH_SHORT).show()
+                    // 🔥 CASE 1: logging response → fetch ulang sekali
+                    if (body?.sensorData == null && retryFetchOnce) {
+                        Log.d("API", "Logging response detected, retrying fetch...")
+                        retryFetchOnce = false
+                        fetchSensorData()
                         return
                     }
 
-                    updateUI(data)
+                    // ❌ CASE 2: tetap null → stop
+                    if (body?.sensorData == null) {
+                        showError("Data sensor tidak tersedia")
+                        return
+                    }
+
+                    // ✅ CASE 3: data valid
+                    updateUI(body.sensorData)
                 }
 
                 override fun onFailure(call: Call<SensorApiResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Gagal koneksi API", Toast.LENGTH_SHORT).show()
-                    Log.e("API_ERROR", t.message ?: "unknown error")
+                    showError("Gagal koneksi ke server")
                 }
             })
     }
 
-    private fun checkOverallStatus(tds: Double, ph: Double, airTemp: Double, humidity: Double): String {
-        // Logika status hanya menggunakan TDS dan PH
-        if (ph < 5.5 || ph > 7.0 || tds < 600.0 || tds > 1200.0) {
-            return "KRITIS"
-        } else if (ph < 5.8 || ph > 6.5 || tds < 800.0 || tds > 1000.0) {
-            return "PERHATIAN"
-        }
-        return "OPTIMAL"
-    }
-
+    // =====================================================
+    // UI UPDATE
+    // =====================================================
     private fun updateUI(data: SensorData) {
 
-        fun Number?.safeDouble(): Double = this?.toDouble() ?: 0.0
-        fun Number?.safeInt(): Int = this?.toInt() ?: 0
+        val tds = data.tds ?: 0f
+        val suhu = data.suhuAir ?: data.suhu ?: 0f
+        val hum = data.kelembapan ?: 0f
 
-        if (data.tds == null && data.avg_tds == null) {
-            binding.gaugeStatusText.text = "MENUNGGU DATA"
-            binding.gaugeProgressBar.progress = 0
-            return
-        }
-
-        // DETAIL SENSOR
-        binding.tvtds.text = getString(R.string.tds_format, data.tds.safeInt())
-        binding.tvph.text = getString(R.string.ph_format, data.pH.safeDouble())
-        binding.tvtemp.text = getString(R.string.temp_format, data.suhu.safeDouble())
-
-        // RATA-RATA
-        binding.avgTdsEcValue.text =
-            getString(R.string.tds_suhu_format,
-                data.avg_tds.safeInt(),
-                data.avg_suhu.safeDouble()
-            )
-
-        binding.avgHumTempValue.text =
-            getString(R.string.hum_temp_format,
-                data.avg_hum.safeInt(),
-                data.avg_suhu.safeDouble()
-            )
+        binding.tvtds.text = "${tds.toInt()} ppm"
+        binding.tvtemp.text = "${suhu} °C"
+        binding.tvhum.text = "${hum.toInt()}%"
 
         val status = checkOverallStatus(
-            (data.avg_tds ?: data.tds).safeDouble(),
-            data.pH.safeDouble(),
-            (data.avg_suhu ?: data.suhu).safeDouble(),
-            (data.avg_hum ?: data.hum).safeDouble()
+            tds = tds.toDouble(),
+            suhu = suhu.toDouble(),
+            kelembapan = hum.toDouble()
         )
 
-        applyOverallStatusText(status)
+        applyOverallStatus(status)
     }
 
-    private fun applyOverallStatusText(status: String) {
-        val textColor: Int
-        val percentage: Int
+    // =====================================================
+    // STATUS LOGIC
+    // =====================================================
+    private fun checkOverallStatus(
+        tds: Double,
+        suhu: Double,
+        kelembapan: Double
+    ): String {
+        return when {
+            tds < 500 || tds > 1200 || suhu < 15 || suhu > 35 -> "KRITIS"
+            tds < 700 || tds > 1000 || suhu < 20 || suhu > 30 -> "PERHATIAN"
+            else -> "OPTIMAL"
+        }
+    }
 
-        when (status) {
-            "KRITIS" -> {
-                textColor = ContextCompat.getColor(requireContext(), R.color.color_status_critical)
-                percentage = 20
-            }
-            "PERHATIAN" -> {
-                textColor = ContextCompat.getColor(requireContext(), R.color.color_status_warning)
-                percentage = 50
-            }
-            else -> {
-                textColor = ContextCompat.getColor(requireContext(), R.color.color_status_optimal)
-                percentage = 90
-            }
+    private fun applyOverallStatus(status: String) {
+        val (color, percent) = when (status) {
+            "KRITIS" -> R.color.color_status_critical to 20
+            "PERHATIAN" -> R.color.color_status_warning to 50
+            else -> R.color.color_status_optimal to 90
         }
 
+        val resolvedColor = ContextCompat.getColor(requireContext(), color)
+
         binding.gaugeStatusText.text = status
-        binding.gaugeStatusText.setTextColor(textColor)
+        binding.gaugeStatusText.setTextColor(resolvedColor)
 
-        binding.gaugePercentageText.text = "$percentage%"
-        binding.gaugePercentageText.setTextColor(textColor)
-        binding.gaugeProgressBar.progress = percentage
+        binding.gaugePercentageText.text = "$percent%"
+        binding.gaugePercentageText.setTextColor(resolvedColor)
 
+        binding.gaugeProgressBar.progress = percent
         binding.statusDetailLabel.text = "Kondisi Hidroponik: $status"
-        binding.statusDetailLabel.setTextColor(textColor)
+        binding.statusDetailLabel.setTextColor(resolvedColor)
     }
 
+    // =====================================================
+    // ERROR HANDLER
+    // =====================================================
+    private fun showError(msg: String) {
+        if (!isAdded) return
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    }
+
+    // =====================================================
+    // LIFECYCLE
+    // =====================================================
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
-
-    private val updater = object : Runnable {
-        override fun run() {
-            updateSensorData()
-            handler.postDelayed(this, 3000) // tiap 3 detik
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        handler.post(updater)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        handler.removeCallbacks(updater)
-    }
-
 }

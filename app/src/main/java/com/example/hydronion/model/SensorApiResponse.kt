@@ -1,4 +1,4 @@
 data class SensorApiResponse(
     val status: String,
-    val sensor_data: SensorData
+    val sensorData: SensorData
 )
