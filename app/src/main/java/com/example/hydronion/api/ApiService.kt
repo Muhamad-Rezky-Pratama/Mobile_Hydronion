@@ -37,13 +37,13 @@ interface ApiService {
     @GET("users")
     fun getUsers(): Call<UserResponse>
 
-    @PUT("users/{id}/username")
+    @PUT("users/{user_id}/username")
     fun updateUsername(
         @Path("id") userId: Int,
         @Body request: UpdateUsernameRequest
     ): Call<ApiResponse<Unit>>
 
-    @DELETE("users/{id}")
+    @DELETE("users/{user_id}")
     fun deleteUser(
         @Path("id") userId: Int
     ): Call<ApiResponse<Unit>>
