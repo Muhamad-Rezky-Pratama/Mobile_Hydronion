@@ -35,7 +35,7 @@ interface ApiService {
     ): Call<RegisterResponse>
 
     @GET("users")
-    fun getUsers(): Call<UserResponse>
+    fun getUsers(): Call<List<User>>
 
     @PUT("users/{user_id}/username")
     fun updateUsername(
