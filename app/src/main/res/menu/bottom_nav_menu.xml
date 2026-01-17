@@ -16,4 +16,8 @@
         android:id="@+id/accountFragment"
         android:icon="@drawable/ic_account"
         android:title="Account" />
+    <item
+        android:id="@+id/aboutFragment"
+        android:icon="@drawable/ic_info"
+        android:title="About" />
 </menu>

@@ -38,24 +38,18 @@ class AccountFragment : Fragment() {
         binding.tvRole.text = savedRole?.uppercase()
         binding.tvHidroponikId.text = savedUserId
 
-        // 3. Menampilkan Alamat API
-        binding.tvApiUrl.text = "Sumber Data Publik: \nhttps://api.openweathermap.org/data/2.5/weather"
-
-        // 4. Logika Tombol Logout
+        // 3. Logika Tombol Logout
         binding.btnLogout.setOnClickListener {
             handleLogout()
         }
     }
 
     private fun handleLogout() {
-        // Hapus data sesi di SharedPreferences
         val sharedPref = requireContext().getSharedPreferences("SessionHydronion", Context.MODE_PRIVATE)
         sharedPref.edit().clear().apply()
 
         Toast.makeText(requireContext(), "Logout Berhasil", Toast.LENGTH_SHORT).show()
 
-        // Navigasi kembali ke Login dan bersihkan Backstack agar tidak bisa 'Back' lagi
-        // Pastikan R.id.loginFragment sesuai dengan ID di nav_graph.xml Anda
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.accountFragment, true)
             .build()
@@ -63,7 +57,6 @@ class AccountFragment : Fragment() {
         try {
             findNavController().navigate(R.id.loginFragment, null, navOptions)
         } catch (e: Exception) {
-            // Fallback: Restart MainActivity jika NavGraph bermasalah
             val intent = requireActivity().intent
             requireActivity().finish()
             startActivity(intent)

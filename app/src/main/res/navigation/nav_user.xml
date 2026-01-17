@@ -2,23 +2,34 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_user"
     app:startDestination="@id/monitoringFragment">
 
     <fragment
         android:id="@+id/monitoringFragment"
-        android:name="com.example.hydronion.MonitoringFragment" />
+        android:name="com.example.hydronion.MonitoringFragment"
+        android:label="Status" />
 
     <fragment
         android:id="@+id/controlFragment"
-        android:name="com.example.hydronion.ControlFragment" />
+        android:name="com.example.hydronion.ControlFragment"
+        android:label="Kontrol" />
 
     <fragment
         android:id="@+id/logFragment"
-        android:name="com.example.hydronion.LogFragment" />
+        android:name="com.example.hydronion.LogFragment"
+        android:label="Log" />
 
     <fragment
         android:id="@+id/accountFragment"
-        android:name="com.example.hydronion.AccountFragment" />
+        android:name="com.example.hydronion.AccountFragment"
+        android:label="Account" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.hydronion.AboutFragment"
+        android:label="About"
+        tools:layout="@layout/activity_about" />
 
 </navigation>
