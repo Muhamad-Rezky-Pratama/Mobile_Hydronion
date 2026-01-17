@@ -2,6 +2,7 @@
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -40,6 +41,11 @@ interface ApiService {
     fun updateUsername(
         @Path("id") userId: Int,
         @Body request: UpdateUsernameRequest
+    ): Call<ApiResponse>
+
+    @DELETE("users/{id}")
+    fun deleteUser(
+        @Path("id") userId: Int
     ): Call<ApiResponse>
 
 }
