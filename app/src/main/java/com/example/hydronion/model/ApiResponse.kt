@@ -1,5 +1,5 @@
-data class ApiResponse(
+data class ApiResponse<T>(
     val status: String,
     val message: String?,
-    val data: SensorResponse
+    val data: T?
 )
