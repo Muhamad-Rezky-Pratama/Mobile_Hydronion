@@ -41,11 +41,11 @@ interface ApiService {
     fun updateUsername(
         @Path("id") userId: Int,
         @Body request: UpdateUsernameRequest
-    ): Call<ApiResponse>
+    ): Call<ApiResponse<Unit>>
 
     @DELETE("users/{id}")
     fun deleteUser(
         @Path("id") userId: Int
-    ): Call<ApiResponse>
+    ): Call<ApiResponse<Unit>>
 
 }
