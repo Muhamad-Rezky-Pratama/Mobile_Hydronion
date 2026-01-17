@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -31,4 +32,14 @@ interface ApiService {
     fun register(
         @Body request : RegisterRequest
     ): Call<RegisterResponse>
+
+    @GET("users")
+    fun getUsers(): Call<UserResponse>
+
+    @PUT("users/{id}/username")
+    fun updateUsername(
+        @Path("id") userId: Int,
+        @Body request: UpdateUsernameRequest
+    ): Call<ApiResponse>
+
 }
