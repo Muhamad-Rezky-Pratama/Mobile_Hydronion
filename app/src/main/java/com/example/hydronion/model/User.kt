@@ -1,5 +1,9 @@
+import com.google.gson.annotations.SerializedName
+
+// Menggunakan Int agar cocok dengan Database Laragon Anda
 data class User(
-    val id: Int,
-    val username: String,
-    val role: String
+    @SerializedName("id") val id: Int,
+    @SerializedName("username") val username: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("role") val role: String
 )

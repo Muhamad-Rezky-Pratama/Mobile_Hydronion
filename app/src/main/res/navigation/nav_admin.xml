@@ -2,15 +2,26 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_admin"
-    app:startDestination="@id/adminAccountFragment">
-
-    <fragment
-        android:id="@+id/adminAccountFragment"
-        android:name="com.example.hydronion.AdminAccountFragment" />
+    app:startDestination="@id/adminMonitoringFragment">
 
     <fragment
         android:id="@+id/adminMonitoringFragment"
-        android:name="com.example.hydronion.AdminMonitoringFragment" />
+        android:name="com.example.hydronion.AdminMonitoringFragment"
+        android:label="Status Admin"
+        tools:layout="@layout/fragment_admin_monitoring" />
+
+    <fragment
+        android:id="@+id/adminUserListFragment"
+        android:name="com.example.hydronion.AdminUserListFragment"
+        android:label="Daftar User"
+        tools:layout="@layout/fragment_admin_user_list" />
+
+    <fragment
+        android:id="@+id/adminAccountFragment"
+        android:name="com.example.hydronion.AdminAccountFragment"
+        android:label="Account Admin"
+        tools:layout="@layout/fragment_admin_account" />
 
 </navigation>
